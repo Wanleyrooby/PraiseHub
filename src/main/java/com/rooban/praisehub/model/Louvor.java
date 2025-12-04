@@ -51,7 +51,6 @@ public class Louvor {
     @Column(name = "horario_atualizacao")
     private LocalDateTime horarioAtualizacao;
 
-
     @PrePersist
     protected void onCreate() {
         this.horarioCriacao = LocalDateTime.now();

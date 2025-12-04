@@ -7,10 +7,9 @@ import com.rooban.praisehub.service.LouvorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/louvores")
@@ -23,5 +22,17 @@ public class LouvorController {
     public ResponseEntity<LouvorResponse> criar(@RequestBody @Valid LouvorRequest request) {
         Louvor l = service.criar(request);
         return ResponseEntity.ok(new LouvorResponse(l));
+    }
+
+    @GetMapping
+    public List<LouvorResponse> listar() {
+        return service.listarTodos().stream()
+                .map(LouvorResponse::new)
+                .toList();
+    }
+
+    @GetMapping("/{id}")
+    public LouvorResponse buscarPorId(@PathVariable Long id) {
+        return new LouvorResponse(service.buscarPorId(id));
     }
 }
