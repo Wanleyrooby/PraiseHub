@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,11 +23,14 @@ public class LouvorController {
     @PostMapping
     public ResponseEntity<LouvorResponse> criar(@RequestBody @Valid LouvorRequest request) {
         Louvor l = service.criar(request);
-        return ResponseEntity.ok(new LouvorResponse(l));
+
+        URI location = URI.create("/louvores/" + l.getId());
+
+        return ResponseEntity.created(location).body(new LouvorResponse(l));
     }
 
     @GetMapping
-    public List<LouvorResponse> listar() {
+    public List<LouvorResponse> listarTodos() {
         return service.listarTodos().stream()
                 .map(LouvorResponse::new)
                 .toList();

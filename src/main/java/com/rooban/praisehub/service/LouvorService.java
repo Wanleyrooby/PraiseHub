@@ -4,6 +4,7 @@ package com.rooban.praisehub.service;
 import com.rooban.praisehub.dto.LouvorRequest;
 import com.rooban.praisehub.dto.LouvorResponse;
 import com.rooban.praisehub.dto.LouvorUpdateRequest;
+import com.rooban.praisehub.exception.LouvorNotFoundException;
 import com.rooban.praisehub.model.Louvor;
 import com.rooban.praisehub.repository.LouvorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,27 @@ public class LouvorService {
 
     public Louvor buscarPorId(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Louvor não encontrado."));
+                .orElseThrow(() -> new LouvorNotFoundException(id));
     }
 
     public List<Louvor> buscarPorTitulo(String titulo) {
-        return repository.findByTituloContainingIgnoreCase(titulo);
+        List<Louvor> lista = repository.findByTituloContainingIgnoreCase(titulo);
+
+        if (lista.isEmpty()) {
+            throw new LouvorNotFoundException("Nenhum louvor encontrado com o título: " + titulo);
+        }
+
+        return lista;
     }
 
     public List<Louvor> buscarPorTag(String tag) {
-        return repository.findbyTag(tag);
+        List<Louvor> lista = repository.findbyTag(tag);
+
+        if (lista.isEmpty()) {
+            throw new LouvorNotFoundException("Nenhum louvor encontrado com o tag: " + tag);
+        }
+
+        return lista;
     }
 
     public Louvor atualizar(Long id, LouvorUpdateRequest dto) {
