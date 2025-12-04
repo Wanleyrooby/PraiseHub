@@ -2,6 +2,7 @@ package com.rooban.praisehub.controller;
 
 import com.rooban.praisehub.dto.LouvorRequest;
 import com.rooban.praisehub.dto.LouvorResponse;
+import com.rooban.praisehub.dto.LouvorUpdateRequest;
 import com.rooban.praisehub.model.Louvor;
 import com.rooban.praisehub.service.LouvorService;
 import jakarta.validation.Valid;
@@ -35,4 +36,30 @@ public class LouvorController {
     public LouvorResponse buscarPorId(@PathVariable Long id) {
         return new LouvorResponse(service.buscarPorId(id));
     }
+
+    @GetMapping("/buscar")
+    public List<LouvorResponse> buscarPorTitulo(@RequestParam String titulo) {
+        return service.buscarPorTitulo(titulo).stream()
+                .map(LouvorResponse::new)
+                .toList();
+    }
+
+    @GetMapping("/tag/{tag}")
+    public List<LouvorResponse> buscarPorTag(@PathVariable String tag) {
+        return service.buscarPorTag(tag).stream()
+                .map(LouvorResponse::new)
+                .toList();
+    }
+
+    @PutMapping("/{id}")
+    public LouvorResponse atualizar(@PathVariable Long id, @RequestBody LouvorUpdateRequest dto) {
+        return new LouvorResponse(service.atualizar(id, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
+        service.deletar(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
