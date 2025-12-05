@@ -26,7 +26,7 @@ public class Louvor {
     @Column(nullable = false)
     private String titulo;
 
-    @Column(length = 100)
+    @Column(nullable = false, length = 100)
     private String autor;
 
     @Size(max = 50)

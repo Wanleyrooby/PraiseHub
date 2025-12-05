@@ -24,7 +24,7 @@ public class LouvorService {
         l.setTitulo(dto.titulo());
         l.setAutor(dto.autor());
         l.setTom(dto.tom());
-        l.setLetra(dto.autor());
+        l.setLetra(dto.letra());
         l.setTags(dto.tags());
         l.setDuracao(dto.duracao());
 
