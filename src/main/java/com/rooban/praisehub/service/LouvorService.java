@@ -2,22 +2,25 @@ package com.rooban.praisehub.service;
 
 
 import com.rooban.praisehub.dto.LouvorRequest;
-import com.rooban.praisehub.dto.LouvorResponse;
 import com.rooban.praisehub.dto.LouvorUpdateRequest;
 import com.rooban.praisehub.exception.LouvorNotFoundException;
 import com.rooban.praisehub.model.Louvor;
 import com.rooban.praisehub.repository.LouvorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class LouvorService {
 
-    @Autowired
-    private LouvorRepository repository;
+    private final LouvorRepository repository;
 
+    public LouvorService(LouvorRepository repository) {
+        this.repository = repository;
+    }
+
+    @Transactional
     public Louvor criar(LouvorRequest dto) {
         Louvor l = new Louvor();
 
@@ -60,6 +63,7 @@ public class LouvorService {
         return lista;
     }
 
+    @Transactional
     public Louvor atualizar(Long id, LouvorUpdateRequest dto) {
         Louvor l = buscarPorId(id);
 
@@ -76,6 +80,7 @@ public class LouvorService {
         return repository.save(l);
     }
 
+    @Transactional
     public void deletar(Long id) {
         Louvor l = buscarPorId(id);
         repository.delete(l);
