@@ -6,6 +6,7 @@ import com.rooban.praisehub.dto.LouvorUpdateRequest;
 import com.rooban.praisehub.exception.LouvorNotFoundException;
 import com.rooban.praisehub.model.Louvor;
 import com.rooban.praisehub.repository.LouvorRepository;
+import com.rooban.praisehub.util.LouvorMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,22 +16,16 @@ import java.util.List;
 public class LouvorService {
 
     private final LouvorRepository repository;
+    private final LouvorMapper mapper;
 
-    public LouvorService(LouvorRepository repository) {
+    public LouvorService(LouvorRepository repository, LouvorMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Transactional
     public Louvor criar(LouvorRequest dto) {
-        Louvor l = new Louvor();
-
-        l.setTitulo(dto.titulo());
-        l.setAutor(dto.autor());
-        l.setTom(dto.tom());
-        l.setLetra(dto.letra());
-        l.setTags(dto.tags());
-        l.setDuracao(dto.duracao());
-
+        Louvor l = mapper.toEntity(dto);
         return repository.save(l);
     }
 
@@ -66,17 +61,7 @@ public class LouvorService {
     @Transactional
     public Louvor atualizar(Long id, LouvorUpdateRequest dto) {
         Louvor l = buscarPorId(id);
-
-        if (dto.titulo() != null) l.setTitulo(dto.titulo());
-        if (dto.autor() != null) l.setAutor(dto.autor());
-        if (dto.tom() != null) l.setTom(dto.tom());
-        if (dto.letra() != null) l.setLetra(dto.letra());
-        if (dto.tags() != null) {
-            l.getTags().clear();
-            l.getTags().addAll(dto.tags());
-        }
-        if (dto.duracao() != null) l.setDuracao(dto.duracao());
-
+        mapper.updateEntity(dto, l);
         return repository.save(l);
     }
 

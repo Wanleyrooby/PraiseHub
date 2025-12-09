@@ -5,6 +5,7 @@ import com.rooban.praisehub.dto.LouvorResponse;
 import com.rooban.praisehub.dto.LouvorUpdateRequest;
 import com.rooban.praisehub.model.Louvor;
 import com.rooban.praisehub.service.LouvorService;
+import com.rooban.praisehub.util.LouvorMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,44 +21,45 @@ public class LouvorController {
     @Autowired
     private LouvorService service;
 
+    @Autowired
+    private LouvorMapper mapper;
+
     @PostMapping
     public ResponseEntity<LouvorResponse> criar(@RequestBody @Valid LouvorRequest request) {
         Louvor l = service.criar(request);
-
         URI location = URI.create("/louvores/" + l.getId());
-
-        return ResponseEntity.created(location).body(new LouvorResponse(l));
+        return ResponseEntity.created(location).body(mapper.toResponse(l));
     }
 
     @GetMapping
     public List<LouvorResponse> listarTodos() {
         return service.listarTodos().stream()
-                .map(LouvorResponse::new)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @GetMapping("/{id}")
     public LouvorResponse buscarPorId(@PathVariable Long id) {
-        return new LouvorResponse(service.buscarPorId(id));
+        return mapper.toResponse(service.buscarPorId(id));
     }
 
     @GetMapping("/buscar")
     public List<LouvorResponse> buscarPorTitulo(@RequestParam String titulo) {
         return service.buscarPorTitulo(titulo).stream()
-                .map(LouvorResponse::new)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @GetMapping("/tag/{tag}")
     public List<LouvorResponse> buscarPorTag(@PathVariable String tag) {
         return service.buscarPorTag(tag).stream()
-                .map(LouvorResponse::new)
+                .map(mapper::toResponse)
                 .toList();
     }
 
     @PutMapping("/{id}")
     public LouvorResponse atualizar(@PathVariable Long id, @RequestBody LouvorUpdateRequest dto) {
-        return new LouvorResponse(service.atualizar(id, dto));
+        return mapper.toResponse(service.atualizar(id, dto));
     }
 
     @DeleteMapping("/{id}")
@@ -65,5 +67,4 @@ public class LouvorController {
         service.deletar(id);
         return ResponseEntity.noContent().build();
     }
-
 }
